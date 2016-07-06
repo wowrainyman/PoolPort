@@ -48,7 +48,7 @@ class DataBaseManager
 	}
 
 	/**
-	 * Return a row object from poolport_transactions table
+	 * Return a row object from transactions table
 	 *
 	 * @param int $transactionId
 	 *
@@ -56,7 +56,7 @@ class DataBaseManager
 	 */
 	public function find($transactionId)
 	{
-		$stmt = $this->dbh->prepare("SELECT * FROM poolport_transactions WHERE id = :id LIMIT 1");
+		$stmt = $this->dbh->prepare("SELECT * FROM transactions WHERE id = :id LIMIT 1");
 		$stmt->bindParam(':id', $transactionId);
 		$stmt->execute();
 
@@ -71,7 +71,7 @@ class DataBaseManager
 
 	protected function createTables()
 	{
-		$query = "CREATE TABLE IF NOT EXISTS `poolport_transactions` (
+		$query = "CREATE TABLE IF NOT EXISTS `transactions` (
 					`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 					`port_id` tinyint(2) UNSIGNED NOT NULL,
 					`price` decimal(15,2) NOT NULL,
@@ -85,7 +85,7 @@ class DataBaseManager
 				) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-				CREATE TABLE IF NOT EXISTS `poolport_status_log` (
+				CREATE TABLE IF NOT EXISTS `transaction_has_statuses` (
 					`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 					`transaction_id` int(11) UNSIGNED NOT NULL,
 					`result_code` varchar(10) COLLATE utf8_persian_ci NULL DEFAULT NULL,
@@ -93,7 +93,7 @@ class DataBaseManager
 				    `log_date` int NOT NULL,
 					PRIMARY KEY (`id`),
 					INDEX (`transaction_id`),
-					CONSTRAINT `fk_transaction_id` FOREIGN KEY (`transaction_id`) REFERENCES `poolport_transactions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+					CONSTRAINT `fk_transaction_id` FOREIGN KEY (`transaction_id`) REFERENCES `transactions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 				) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 
 		$this->dbh->exec($query);
